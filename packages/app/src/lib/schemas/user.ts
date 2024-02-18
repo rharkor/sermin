@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-import { jsonApiQuerySchema, jsonApiResponseSchema } from "../json-api"
 import { TDictionary } from "../langs"
 
 import { emailSchema, passwordSchemaWithRegex, usernameSchema } from "./auth"
@@ -40,20 +39,6 @@ export const sessionsSchema = () =>
     ip: z.string(),
     lastUsedAt: z.coerce.date().nullable(),
     createdAt: z.coerce.date(),
-  })
-
-export const getActiveSessionsSchema = (dictionary?: TDictionary) =>
-  jsonApiQuerySchema(dictionary)
-    .pick({
-      page: true,
-      perPage: true,
-      sort: true,
-    })
-    .optional()
-
-export const getActiveSessionsResponseSchema = () =>
-  jsonApiResponseSchema().extend({
-    data: z.array(sessionsSchema()).optional(),
   })
 
 export const deleteSessionSchema = () =>

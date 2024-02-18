@@ -1,7 +1,6 @@
 import { Locale } from "i18n-config"
 
 import requireAuth from "@/components/auth/require-auth"
-import NavSettings from "@/components/nav-settings"
 import { getDictionary } from "@/lib/langs"
 import { prisma } from "@/lib/prisma"
 import { redis } from "@/lib/redis"
@@ -56,7 +55,7 @@ export default async function ProtectedLayout({
     <div className="flex flex-row">
       <Sidebar dictionary={dictionary} />
       {children}
-      <NavSettings lang={lang} />
+      {/* <NavSettings lang={lang} /> */}
     </div>
   )
 }

@@ -5,7 +5,6 @@ import DeleteAccountButton from "@/components/auth/delete-account-button"
 import SignoutButton from "@/components/auth/sign-out-button"
 import VerifyEmailButton from "@/components/auth/verify-email-button"
 import ProfileDetails from "@/components/profile/profile-details"
-import UserActiveSessions from "@/components/profile/sessions/user-active-sessions"
 import CardTitle from "@/components/ui/card"
 import { nextAuthOptions } from "@/lib/auth"
 import { getDictionary } from "@/lib/langs"
@@ -41,7 +40,6 @@ export default async function Profile({
               <SignoutButton>{dictionary.signOut}</SignoutButton>
             </div>
             <ProfileDetails dictionary={dictionary} hasVerifiedEmail={hasVerifiedEmail} />
-            <UserActiveSessions dictionary={dictionary} session={session} />
           </CardBody>
         </Card>
       </div>

@@ -1,12 +1,8 @@
 import {
   deleteAccountResponseSchema,
-  deleteSessionResponseSchema,
-  deleteSessionSchema,
   forgotPasswordResponseSchema,
   forgotPasswordSchema,
   getAccountResponseSchema,
-  getActiveSessionsResponseSchema,
-  getActiveSessionsSchema,
   resetPasswordResponseSchema,
   resetPasswordSchema,
   sendVerificationEmailResponseSchema,
@@ -25,21 +21,11 @@ import {
 
 import { sendVerificationEmail, verifyEmail } from "./email/mutations"
 import { forgotPassword, resetPassword } from "./password/mutations"
-import { deleteSession } from "./sessions/mutations"
-import { getActiveSessions } from "./sessions/queries"
 import { deleteAccount, updateUser } from "./mutations"
 import { getAccount } from "./queries"
 
 export const meRouter = router({
   updateUser: authenticatedProcedure.input(updateUserSchema()).output(updateUserResponseSchema()).mutation(updateUser),
-  getActiveSessions: authenticatedNoEmailVerificationProcedure
-    .input(getActiveSessionsSchema())
-    .output(getActiveSessionsResponseSchema())
-    .query(getActiveSessions),
-  deleteSession: authenticatedNoEmailVerificationProcedure
-    .input(deleteSessionSchema())
-    .output(deleteSessionResponseSchema())
-    .mutation(deleteSession),
   getAccount: authenticatedNoEmailVerificationProcedure.output(getAccountResponseSchema()).query(getAccount),
   deleteAccount: authenticatedNoEmailVerificationProcedure
     .output(deleteAccountResponseSchema())

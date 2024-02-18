@@ -1,13 +1,10 @@
-import { CronJob } from "cron"
+import { autoRemove } from "./autoremove/cron"
+import { fetchDbBackups } from "./dbackup/cron"
 
-import sampleCron from "./sample/cron"
+const main = () => {
+  setInterval(fetchDbBackups, 1000 * 60)
+  fetchDbBackups()
+  autoRemove()
+}
 
-//* Sync last connection of users
-new CronJob(
-  //? Every 3 minutes
-  "*/3 * * * *",
-  sampleCron,
-  null,
-  true,
-  "Europe/Paris"
-)
+main()

@@ -88,3 +88,38 @@ model UserEmailVerificationToken {
   user       User     @relation(fields: [identifier], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
 }
+
+model DatabaseBackup {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+
+  // DB Infos
+  host     String
+  port     Int
+  database String
+  username String
+  password String
+
+  // S3 Infos
+  s3BucketName String
+  s3Region     String
+  s3AccessKey  String
+  s3SecretKey  String
+  s3Endpoint   String
+  s3Path       String
+
+  // Cron
+  cron String
+
+  // Additionals
+  pgVersion          String
+  pgCompressionLevel Int
+  pgFormat           String // plain, custom, directory, tar
+  retention          Int // in days
+  encryptionKey      String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
