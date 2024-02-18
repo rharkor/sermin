@@ -223,5 +223,9 @@
     "invalid": "Phrase secrète invalide"
   },
   "save": "Sauvegarder",
-  "cropImage": "Recadrer l'image"
+  "cropImage": "Recadrer l'image",
+  "dbackup": {
+    "dbackup": "DBackup"
+  },
+  "appName": "SERMIN"
 }

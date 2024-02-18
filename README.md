@@ -1,10 +1,10 @@
-# Next.js Enterprise Boilerplate
+# Sermin
 
-![Project intro image](./project-logo.png)
+Sermin is a modern, open-source, and high-performance application for managing your server infrastructure. It gives you access to a wide range of features, including server monitoring, database backups, and much more.
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rharkor/next-boilerplate/blob/main/LICENSE)
 
-Welcome to the _Next.js Boilerplate_, an open-source template for all your nextjs projects! It's loaded with features that'll help you build a high-performance, maintainable, and enjoyable app. We've done all the heavy lifting for you, so sit back, relax, and get ready to conquer the world with your incredible app! 🌍
+Based on _Next.js Boilerplate_, an open-source template for all your nextjs projects! It's loaded with features that'll help you build a high-performance, maintainable, and enjoyable app. We've done all the heavy lifting for you, so sit back, relax, and get ready to conquer the world with your incredible app! 🌍
 <br />
 <br />
 You can test the demo [here](https://next-boilerplate-rharkor.vercel.app/).
@@ -43,7 +43,7 @@ With this template, you get all the awesomeness you need:
 
 ## Table of Contents
 
-- [Next.js Enterprise Boilerplate](#nextjs-enterprise-boilerplate)
+- [Sermin](#sermin)
   - [📚 Features](#-features)
   - [Table of Contents](#table-of-contents)
   - [🎯 Getting Started](#-getting-started)

@@ -1,7 +1,6 @@
 import { NextAuthOptions, Session } from "next-auth"
 import { Provider } from "next-auth/providers"
 import Credentials from "next-auth/providers/credentials"
-import GithubProvider from "next-auth/providers/github"
 import { randomUUID } from "crypto"
 import { env } from "env.mjs"
 import { i18n, Locale } from "i18n-config"
@@ -121,15 +120,6 @@ export const providers: Provider[] = [
     },
   }),
 ]
-
-if (env.ENABLE_REGISTRATION) {
-  providers.push(
-    GithubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-    })
-  )
-}
 
 export const providersByName: {
   [key: string]: Provider | undefined

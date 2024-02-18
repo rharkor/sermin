@@ -223,5 +223,9 @@
     "invalid": "Invalid mnemonic phrase."
   },
   "save": "Save",
-  "cropImage": "Crop image"
+  "cropImage": "Crop image",
+  "dbackup": {
+    "dbackup": "DBackup"
+  },
+  "appName": "SERMIN"
 }

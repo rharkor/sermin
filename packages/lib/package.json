@@ -1,5 +1,5 @@
 {
-  "name": "@next-boilerplate/lib",
+  "name": "@sermin/lib",
   "scripts": {
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx .",

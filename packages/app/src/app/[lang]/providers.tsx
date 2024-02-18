@@ -14,7 +14,7 @@ export default function RootProviders({ children, dictionary }: { children: Reac
     <DictionaryProvider dictionary={dictionary}>
       <UIProvider>
         <NextAuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider attribute="class" forcedTheme="dark">
             <TrpcProvider>{children}</TrpcProvider>
             <Toaster />
           </ThemeProvider>

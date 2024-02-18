@@ -35,21 +35,4 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY packages/app/prisma/schema.prisma ../app/prisma/schema.prisma
 RUN npx prisma generate
 
-# Install logrotate
-RUN apk add --update logrotate
-
-# Add crontab file in the cron directory
-COPY packages/cron/crontab /etc/crontabs/root
-
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/crontabs/root
-
-# Create a log file to store the stdout of cron
-RUN touch /var/log/cron.log
-
-# Set up logrotate
-COPY packages/cron/logrotate.conf /etc/logrotate.d/app
-RUN chmod 0644 /etc/logrotate.d/app
-
-# Run the command on container startup
-CMD crond -l 2 && tail -f /var/log/cron.log
+CMD ["npm", "start"]

@@ -2,7 +2,7 @@ import { env } from "@/lib/env"
 import { prisma } from "@/lib/prisma"
 import { logger } from "@lib/logger"
 
-const main = async () => {
+const sampleCron = async () => {
   const maxDurationWarning = 1000 * 60 * 5 // 5 minutes
   const name = "CronName"
   const now = new Date()
@@ -24,4 +24,4 @@ const main = async () => {
   if (took > maxDurationWarning) logger.warn(`[${now.toLocaleString()}] ${name} took ${took}ms`)
 }
 
-main()
+export default sampleCron

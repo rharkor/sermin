@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { signOut, useSession } from "next-auth/react"
+import { LogOut } from "lucide-react"
 
 import { trpc } from "@/lib/trpc/client"
 import { logger } from "@lib/logger"
@@ -36,7 +37,13 @@ export default function SignoutButton({ children }: { children: React.ReactNode 
   }
 
   return (
-    <Button variant="ghost" onClick={handleSignOut} isLoading={signOutLoading}>
+    <Button
+      variant="ghost"
+      onClick={handleSignOut}
+      isLoading={signOutLoading}
+      color="danger"
+      startContent={<LogOut className="size-4" />}
+    >
       {children}
     </Button>
   )
