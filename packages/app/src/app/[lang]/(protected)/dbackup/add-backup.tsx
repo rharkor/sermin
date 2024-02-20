@@ -60,7 +60,7 @@ export default function AddBackup({
       s3Path: "",
       cron: "0 2 * * *",
       // Additionals
-      pgVersion: "15",
+      pgVersion: "16",
       pgCompressionLevel: 9,
       pgFormat: "custom",
       encryptionKey: "",
