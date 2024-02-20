@@ -80,6 +80,9 @@ export default function AddBackup({
     if (!isOpen) form.reset()
   }, [isOpen, form])
 
+  const pgVersion = form.watch("pgVersion")
+  const pgFormat = form.watch("pgFormat")
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent className="scrollbar-thin max-h-[80vh] overflow-auto">
@@ -218,11 +221,13 @@ export default function AddBackup({
                           {...field}
                           isRequired
                           value={undefined}
-                          onChange={() => {}}
-                          selectedKeys={[form.getValues("pgVersion")]}
-                          onSelectionChange={(value) =>
-                            form.setValue("pgVersion", value as z.infer<ReturnType<typeof formSchema>>["pgVersion"])
-                          }
+                          selectedKeys={[pgVersion]}
+                          onChange={(e) => {
+                            form.setValue(
+                              "pgVersion",
+                              e.target.value as z.infer<ReturnType<typeof formSchema>>["pgVersion"]
+                            )
+                          }}
                         >
                           {postgresVersion.map((version) => (
                             <SelectItem
@@ -255,10 +260,12 @@ export default function AddBackup({
                           {...field}
                           isRequired
                           value={undefined}
-                          onChange={() => {}}
-                          selectedKeys={[form.getValues("pgFormat")]}
-                          onSelectionChange={(value) =>
-                            form.setValue("pgFormat", value as z.infer<ReturnType<typeof formSchema>>["pgFormat"])
+                          selectedKeys={[pgFormat]}
+                          onChange={(e) =>
+                            form.setValue(
+                              "pgFormat",
+                              e.target.value as z.infer<ReturnType<typeof formSchema>>["pgFormat"]
+                            )
                           }
                         >
                           {postgresFormat.map((format) => (

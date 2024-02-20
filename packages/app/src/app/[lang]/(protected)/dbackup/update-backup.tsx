@@ -247,10 +247,12 @@ export default function UpdateBackup({
                           {...field}
                           isRequired
                           value={undefined}
-                          onChange={() => {}}
                           selectedKeys={pgVersion ? [pgVersion] : undefined}
-                          onSelectionChange={(value) =>
-                            form.setValue("pgVersion", value as z.infer<ReturnType<typeof formSchema>>["pgVersion"])
+                          onChange={(e) =>
+                            form.setValue(
+                              "pgVersion",
+                              e.target.value as z.infer<ReturnType<typeof formSchema>>["pgVersion"]
+                            )
                           }
                           isDisabled={backup.isLoading}
                         >
@@ -286,10 +288,12 @@ export default function UpdateBackup({
                           {...field}
                           isRequired
                           value={undefined}
-                          onChange={() => {}}
                           selectedKeys={pgFormat ? [pgFormat] : undefined}
-                          onSelectionChange={(value) =>
-                            form.setValue("pgFormat", value as z.infer<ReturnType<typeof formSchema>>["pgFormat"])
+                          onChange={(e) =>
+                            form.setValue(
+                              "pgFormat",
+                              e.target.value as z.infer<ReturnType<typeof formSchema>>["pgFormat"]
+                            )
                           }
                           isDisabled={backup.isLoading}
                         >
