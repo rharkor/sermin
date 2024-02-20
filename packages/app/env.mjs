@@ -69,7 +69,7 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
-    NEXT_PUBLIC_WS_URL: z.string().optional(),
+    NEXT_PUBLIC_WS_URL: z.string(),
   },
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
