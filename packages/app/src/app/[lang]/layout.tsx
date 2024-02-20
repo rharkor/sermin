@@ -12,8 +12,8 @@ import RootProviders from "./providers"
 import "../globals.css"
 
 export const metadata: Metadata = {
-  title: "Home",
-  description: "Welcome to Next.js boilerplate",
+  title: "Dbackup",
+  description: "Manage your backups with ease",
 }
 
 export async function generateStaticParams() {

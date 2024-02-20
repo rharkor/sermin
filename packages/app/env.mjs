@@ -13,10 +13,10 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
-    PASSWORD_HASHER_SECRET: z.string().min(16),
+    PASSWORD_HASHER_SECRET: z.string(),
     DATABASE_PRISMA_URL: z.string().min(1),
     DATABASE_URL_NON_POOLING: z.string().optional(),
-    NEXTAUTH_SECRET: z.string().min(16),
+    NEXTAUTH_SECRET: z.string(),
     NEXTAUTH_URL: z.string().optional(),
     AUTH_ADMIN_EMAIL: z.string().min(1),
     AUTH_ADMIN_PASSWORD: z.string().min(1),

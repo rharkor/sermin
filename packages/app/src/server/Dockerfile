@@ -8,6 +8,7 @@ ENV NODE_ENV production
 #? Copy the necessary files to install dependencies
 COPY package*.json .
 COPY packages/lib/package*.json ./packages/lib/
+COPY packages/cron/package*.json ./packages/cron/
 COPY packages/app/package*.json ./packages/app/
 COPY packages/app/prisma/schema.prisma ./packages/app/prisma/schema.prisma
 
@@ -25,6 +26,7 @@ ENV NODE_ENV production
 COPY --from=deps /usr/src/app .
 
 COPY packages/lib ./packages/lib
+COPY packages/cron ./packages/cron
 COPY packages/app ./packages/app
 
 RUN npm run build -w packages/app

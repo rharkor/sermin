@@ -14,6 +14,8 @@ services:
         max-size: 50m
     ports:
       - 3000:3000
+    networks:
+      - default
   wss:
     build:
       context: .
@@ -28,6 +30,8 @@ services:
         max-size: 50m
     ports:
       - 3001:3001
+    networks:
+      - default
   cron:
     build:
       context: .
@@ -40,6 +44,8 @@ services:
       driver: json-file
       options:
         max-size: 50m
+    networks:
+      - default
   db:
     image: postgres:latest
     container_name: sermin_db
@@ -58,6 +64,8 @@ services:
         max-size: 50m
     ports:
       - 5432:5432
+    networks:
+      - default
   redis:
     image: redis:latest
     restart: unless-stopped
@@ -73,6 +81,13 @@ services:
       - sermin-redis-data:/data
     ports:
       - 6379:6379
+    networks:
+      - default
+
 volumes:
   sermin-postgres-data: null
   sermin-redis-data: null
+
+networks:
+  default:
+    driver: bridge

@@ -4,6 +4,10 @@ Sermin is a modern, open-source, and high-performance application for managing y
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rharkor/sermine/blob/main/LICENSE)
 
+# demo video
+
+![Demo](./demo.gif)
+
 Based on [Next.js Boilerplate](https://github.com/rharkor/next-boilerplate), an open-source template for all your nextjs projects!
 <br />
 <br />
