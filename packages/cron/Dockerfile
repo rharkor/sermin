@@ -1,4 +1,4 @@
-FROM node:20 AS deps
+FROM node:20-bullseye AS deps
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -12,7 +12,7 @@ COPY packages/cron/package*.json ./packages/cron/
 
 RUN npm i --only=production
 
-FROM node:20 AS builder
+FROM node:20-bullseye AS builder
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -24,7 +24,7 @@ COPY packages/lib ./packages/lib
 
 RUN npm run build -w packages/cron
 
-FROM node:20 AS runner
+FROM node:20-bullseye AS runner
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -36,7 +36,7 @@ COPY packages/app/prisma/schema.prisma ../app/prisma/schema.prisma
 RUN npx prisma generate
 
 # Install pg_dump
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/postgres.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/postgres.list
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && apt-get install -y postgresql-client-13 postgresql-client-14 postgresql-client-15
 

@@ -10,6 +10,16 @@ services:
         max-size: 50m
     ports:
       - 3000:3000
+  wss:
+    image: DOCKER_DEPLOY_WSS_IMAGE
+    container_name: sermin_wss
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    ports:
+      - 3001:3001
   cron:
     image: DOCKER_DEPLOY_CRONS_IMAGE
     container_name: sermin_crons

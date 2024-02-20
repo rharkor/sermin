@@ -32,7 +32,7 @@ git clone https://github.com/rharkor/sermin
 3. Run the following command to start the application
 
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
 
 4. The application should be available at http://localhost:3000
