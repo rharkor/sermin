@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { MoreHorizontal } from "lucide-react"
 import { z } from "zod"
@@ -51,9 +50,7 @@ const skeletonRows: z.infer<ReturnType<typeof getBackupLogsResponseSchema>>["log
 }))
 
 export default function DBackupLogs({ backupId }: { backupId: string }) {
-  const router = useRouter()
   const dictionary = useDictionary()
-  const utils = trpc.useUtils()
   const session = useSession()
 
   const [search, setSearch] = useState("")

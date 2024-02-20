@@ -35,14 +35,15 @@ const main = async () => {
         "@react-aria/visually-hidden",
         "cron",
         "autoprefixer",
-        "@lib/logger"
+        "@lib/logger",
+        "@lib/backup"
       )
     } else if (pkg === path.join(rootPath, "landing")) {
       options.ignoreMatches.push("@types/react-dom", "@lib/logger")
     } else if (pkg === path.join(rootPath, "scripts")) {
       options.ignoreMatches.push("env-setup", "packages-selection", "replace-tokens", "runtime", "@lib/logger")
     } else if (pkg === path.join(rootPath, "cron")) {
-      options.ignoreMatches.push("chalk", "@types/node")
+      options.ignoreMatches.push("chalk", "@types/node", "@aws-sdk/client-s3", "@lib/backup")
     } else if (pkg === path.join(rootPath, "lib")) {
       continue
     }

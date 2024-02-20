@@ -170,6 +170,7 @@ export const dbackupCron = async (
       const PG_DUMP_PATH = `/usr/lib/postgresql/${options.PG_VERSION}/bin/pg_dump`
       await execS(path.join(currentPath, "scripts", "db-backup.sh"), {
         env: {
+          ...process.env,
           PGHOST: options.PGHOST,
           PGPORT: options.PGPORT,
           PGUSER: options.PGUSER,
@@ -191,6 +192,7 @@ export const dbackupCron = async (
       const PG_COMPRESSED_FILE = `${PG_OUTPUT_FILE}.tar.gz`
       await execS("tar -czf $PG_COMPRESSED_FILE $PG_OUTPUT_FILE", {
         env: {
+          ...process.env,
           PG_OUTPUT_FILE: path.basename(PG_OUTPUT_FILE),
           PG_COMPRESSED_FILE: path.basename(PG_COMPRESSED_FILE),
         },
@@ -215,6 +217,7 @@ export const dbackupCron = async (
           "gpg --output $PG_ENCRYPTED_FILE --yes --batch --passphrase-file $ENCRYPTION_KEY_FILE -c $PG_COMPRESSED_FILE",
           {
             env: {
+              ...process.env,
               PG_COMPRESSED_FILE,
               PG_ENCRYPTED_FILE,
               ENCRYPTION_KEY_FILE,
