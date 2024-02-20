@@ -1,0 +1,64 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: packages/app/Dockerfile
+    container_name: sermin_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    ports:
+      - 3000:3000
+  cron:
+    build:
+      context: .
+      dockerfile: packages/cron/Dockerfile
+    container_name: sermin_crons
+    env_file:
+      - .env
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+  db:
+    image: postgres:latest
+    container_name: sermin_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - sermin-postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASS}
+      POSTGRES_DB: ${DATABASE_NAME}
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    ports:
+      - 5432:5432
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    container_name: sermin_redis
+    env_file:
+      - .env
+    command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+    volumes:
+      - sermin-redis-data:/data
+    ports:
+      - 6379:6379
+volumes:
+  sermin-postgres-data: null
+  sermin-redis-data: null

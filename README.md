@@ -2,7 +2,7 @@
 
 Sermin is a modern, open-source, and high-performance application for managing your server databases. You can setup your cronjobs, databases and s3 buckets in a few clicks
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rharkor/next-boilerplate/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rharkor/sermine/blob/main/LICENSE)
 
 Based on [Next.js Boilerplate](https://github.com/rharkor/next-boilerplate), an open-source template for all your nextjs projects!
 <br />
@@ -21,14 +21,18 @@ With this template, you get all the awesomeness you need:
 
 To get started with this project, you can follow these steps:
 
-1. Copy the docker/docker-compose.yml file and the .env.example file to your project
+1. Clone the repository
+
+```bash
+git clone https://github.com/rharkor/sermin
+```
 
 2. Rename the .env.example file to .env and fill in the environment variables
 
 3. Run the following command to start the application
 
 ```bash
-docker-compose up
+docker compose up --build
 ```
 
 4. The application should be available at http://localhost:3000
