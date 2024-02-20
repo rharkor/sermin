@@ -1,5 +1,6 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 import { type ClassValue, clsx } from "clsx"
+import { Locale, localesDetailed } from "i18n-config"
 import { twMerge } from "tailwind-merge"
 
 import { logger } from "@lib/logger"
@@ -188,4 +189,12 @@ export function stringToSlug(string: string): string {
 
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export const formatDate = (date: Date, dictionary: TDictionary) => {
+  return date.toLocaleDateString(`${dictionary.lang}-${localesDetailed[dictionary.lang as Locale].country}`, {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
+  })
 }

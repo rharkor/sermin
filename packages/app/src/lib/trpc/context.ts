@@ -1,11 +1,21 @@
+import { IncomingMessage } from "http"
+import { WebSocket } from "ws"
+
 import { ITrpcContext } from "@/types"
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch"
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next"
+import { NodeHTTPCreateContextFnOptions } from "@trpc/server/dist/adapters/node-http"
 
-export function createContext(opts?: FetchCreateContextFnOptions) {
+export function createContext(
+  opts?:
+    | NodeHTTPCreateContextFnOptions<IncomingMessage, WebSocket>
+    | CreateNextContextOptions
+    | FetchCreateContextFnOptions
+) {
   const response: ITrpcContext = {
     session: null,
-    headers: opts && Object.fromEntries(opts.req.headers),
-    req: opts && opts.req,
+    req: opts?.req,
+    res: opts && "res" in opts ? opts.res : null,
   }
   return response
 }

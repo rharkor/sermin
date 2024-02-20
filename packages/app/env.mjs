@@ -69,6 +69,7 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
+    NEXT_PUBLIC_WS_URL: z.string().optional(),
   },
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
@@ -106,6 +107,7 @@ export const env = createEnv({
     NEXT_PUBLIC_S3_ENDPOINT: process.env.NEXT_PUBLIC_S3_ENDPOINT,
     ENABLE_S3_SERVICE: process.env.ENABLE_S3_SERVICE,
     ENABLE_REGISTRATION: process.env.ENABLE_REGISTRATION,
+    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
   },
   onValidationError: (error) => {
     logger.error(error)

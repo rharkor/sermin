@@ -6,7 +6,7 @@ import { z } from "zod"
 
 import FormField from "@/components/ui/form"
 import { useDictionary } from "@/contexts/dictionary/utils"
-import { createDatabaseBackupSchema } from "@/lib/schemas/backups"
+import { updateDatabaseBackupSchema } from "@/lib/schemas/backups"
 import { trpc } from "@/lib/trpc/client"
 import { postgresFormat, postgresVersion } from "@/types/constants"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -24,53 +24,64 @@ import {
   SelectItem,
 } from "@nextui-org/react"
 
-const formSchema = createDatabaseBackupSchema
+const formSchema = updateDatabaseBackupSchema
 type IForm = z.infer<ReturnType<typeof formSchema>>
 
-export default function AddBackup({
+export default function UpdateBackup({
   isOpen,
   onOpenChange,
   onClose,
+  backupId,
 }: {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
   onClose: () => void
+  backupId: string | null
 }) {
   const dictionary = useDictionary()
   const trpcUtils = trpc.useUtils()
 
-  const createBackupMutation = trpc.backups.createDatabaseBackup.useMutation()
+  const updateBackupMutation = trpc.backups.updateDatabaseBackup.useMutation()
+  const backup = trpc.backups.getDatabaseBackup.useQuery(
+    {
+      id: backupId ?? "",
+    },
+    {
+      enabled: !!backupId && isOpen,
+    }
+  )
 
   //* Form
   const form = useForm<IForm>({
     resolver: zodResolver(formSchema()),
     values: {
-      name: "",
-      description: "",
-      host: "",
-      port: 5432,
-      database: "",
-      username: "",
+      id: backupId ?? "",
+      name: backup.data?.backup.name ?? "",
+      description: backup.data?.backup.description ?? "",
+      host: backup.data?.backup.host ?? "",
+      port: backup.data?.backup.port ?? 5432,
+      database: backup.data?.backup.database ?? "",
+      username: backup.data?.backup.username ?? "",
       password: "",
-      s3Endpoint: "",
-      s3BucketName: "",
-      s3Region: "",
-      s3AccessKey: "",
+      s3Endpoint: backup.data?.backup.s3Endpoint ?? "",
+      s3BucketName: backup.data?.backup.s3BucketName ?? "",
+      s3Region: backup.data?.backup.s3Region ?? "",
+      s3AccessKey: backup.data?.backup.s3AccessKey ?? "",
       s3SecretKey: "",
-      s3Path: "",
-      cron: "0 2 * * *",
+      s3Path: backup.data?.backup.s3Path ?? "",
+      cron: backup.data?.backup.cron ?? "0 2 * * *",
       // Additionals
-      pgVersion: "15",
-      pgCompressionLevel: 9,
-      pgFormat: "custom",
+      pgVersion: (backup.data?.backup.pgVersion as z.infer<ReturnType<typeof formSchema>>["pgVersion"]) ?? "15",
+      pgCompressionLevel: backup.data?.backup.pgCompressionLevel ?? 9,
+      pgFormat: (backup.data?.backup.pgFormat as z.infer<ReturnType<typeof formSchema>>["pgFormat"]) ?? "custom",
       encryptionKey: "",
-      retention: 30, // -1 for infinite, 30 days by default
+      retention: backup.data?.backup.retention ?? -1,
     },
   })
 
-  //* Create backup
+  //* Update backup
   const onSubmit = async (data: IForm) => {
-    await createBackupMutation.mutateAsync(data)
+    await updateBackupMutation.mutateAsync(data)
 
     await trpcUtils.backups.invalidate()
     onClose()
@@ -80,12 +91,15 @@ export default function AddBackup({
     if (!isOpen) form.reset()
   }, [isOpen, form])
 
+  const pgVersion = form.watch("pgVersion")
+  const pgFormat = form.watch("pgFormat")
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent className="scrollbar-thin max-h-[80vh] overflow-auto">
         {(onClose) => (
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <ModalHeader>{dictionary.dbackup.createBackup}</ModalHeader>
+            <ModalHeader>{dictionary.update}</ModalHeader>
             <ModalBody className="flex flex-col gap-2 px-5 py-1">
               <div className="flex flex-col gap-2 p-1 pb-0">
                 <FormField form={form} name="name" type="text" label={dictionary.dbackup.name} isRequired />
@@ -99,6 +113,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.host}
                   isRequired
                   placeholder={dictionary.dbackup.hostPlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -107,6 +122,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.port}
                   isRequired
                   placeholder={dictionary.dbackup.portPlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -115,6 +131,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.database}
                   isRequired
                   placeholder={dictionary.dbackup.databasePlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -123,6 +140,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.username}
                   isRequired
                   placeholder={dictionary.dbackup.usernamePlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -131,6 +149,8 @@ export default function AddBackup({
                   label={dictionary.dbackup.password}
                   isRequired
                   placeholder={dictionary.dbackup.passwordPlaceholder}
+                  isDisabled={backup.isLoading}
+                  replacementContent="*******"
                 />
                 <Divider />
                 <p className="text-lg font-semibold">{dictionary.dbackup.s3}</p>
@@ -141,6 +161,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.s3Endpoint}
                   isRequired
                   placeholder={dictionary.dbackup.s3EndpointPlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -149,6 +170,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.s3BucketName}
                   isRequired
                   placeholder={dictionary.dbackup.s3BucketNamePlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -157,6 +179,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.s3Region}
                   isRequired
                   placeholder={dictionary.dbackup.s3RegionPlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -165,6 +188,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.s3AccessKey}
                   isRequired
                   placeholder={dictionary.dbackup.s3AccessKeyPlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -173,6 +197,8 @@ export default function AddBackup({
                   label={dictionary.dbackup.s3SecretKey}
                   isRequired
                   placeholder={dictionary.dbackup.s3SecretKeyPlaceholder}
+                  isDisabled={backup.isLoading}
+                  replacementContent="*******"
                 />
                 <FormField
                   form={form}
@@ -181,6 +207,7 @@ export default function AddBackup({
                   label={dictionary.dbackup.s3Path}
                   isRequired
                   placeholder={dictionary.dbackup.s3PathPlaceholder}
+                  isDisabled={backup.isLoading}
                 />
                 <FormField
                   form={form}
@@ -188,6 +215,7 @@ export default function AddBackup({
                   type="text"
                   label={dictionary.dbackup.cron}
                   placeholder={dictionary.dbackup.cronPlaceholder}
+                  isDisabled={backup.isLoading}
                 />
               </div>
               <Accordion className="!p-0">
@@ -208,6 +236,7 @@ export default function AddBackup({
                       isRequired
                       placeholder={dictionary.dbackup.retentionPlaceholder}
                       description={dictionary.dbackup.retentionDescription}
+                      isDisabled={backup.isLoading}
                     />
                     <Controller
                       name="pgVersion"
@@ -219,10 +248,11 @@ export default function AddBackup({
                           isRequired
                           value={undefined}
                           onChange={() => {}}
-                          selectedKeys={[form.getValues("pgVersion")]}
+                          selectedKeys={pgVersion ? [pgVersion] : undefined}
                           onSelectionChange={(value) =>
                             form.setValue("pgVersion", value as z.infer<ReturnType<typeof formSchema>>["pgVersion"])
                           }
+                          isDisabled={backup.isLoading}
                         >
                           {postgresVersion.map((version) => (
                             <SelectItem
@@ -245,6 +275,7 @@ export default function AddBackup({
                       placeholder={dictionary.dbackup.pgCompressionLevelPlaceholder}
                       min={0}
                       max={9}
+                      isDisabled={backup.isLoading}
                     />
                     <Controller
                       name="pgFormat"
@@ -256,10 +287,11 @@ export default function AddBackup({
                           isRequired
                           value={undefined}
                           onChange={() => {}}
-                          selectedKeys={[form.getValues("pgFormat")]}
+                          selectedKeys={pgFormat ? [pgFormat] : undefined}
                           onSelectionChange={(value) =>
                             form.setValue("pgFormat", value as z.infer<ReturnType<typeof formSchema>>["pgFormat"])
                           }
+                          isDisabled={backup.isLoading}
                         >
                           {postgresFormat.map((format) => (
                             <SelectItem key={format} value={format} textValue={dictionary.dbackup.format[format]}>
@@ -275,6 +307,8 @@ export default function AddBackup({
                       type="password"
                       label={dictionary.dbackup.encryptionKey}
                       placeholder={dictionary.dbackup.encryptionKeyPlaceholder}
+                      isDisabled={backup.isLoading}
+                      replacementContent={backup.data?.backup.hasEncryptionKey ? "*******" : undefined}
                     />
                   </div>
                 </AccordionItem>
@@ -284,8 +318,13 @@ export default function AddBackup({
               <Button variant="flat" onPress={onClose}>
                 {dictionary.cancel}
               </Button>
-              <Button color="primary" type="submit" isLoading={createBackupMutation.isLoading}>
-                {dictionary.create}
+              <Button
+                color="primary"
+                type="submit"
+                isLoading={updateBackupMutation.isLoading}
+                isDisabled={backup.isLoading || updateBackupMutation.isLoading}
+              >
+                {dictionary.update}
               </Button>
             </ModalFooter>
           </form>

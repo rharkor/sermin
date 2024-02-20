@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "DatabaseBackupLog" ALTER COLUMN "name" DROP NOT NULL,
+ALTER COLUMN "path" DROP NOT NULL;

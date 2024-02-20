@@ -18,11 +18,11 @@ export default function Sidebar({ dictionary }: { dictionary: TDictionary }) {
       <nav className="roudned-r-medium bg-content1 fixed flex h-screen w-[260px] flex-col p-3">
         <h2 className={cn("text-primary ml-4 text-4xl font-bold", fontTitle.className)}>{dictionary.appName}</h2>
         <ul className="mt-4 flex flex-1 flex-col">
-          <li>
+          {/* <li>
             <Link href="/">
               <Button
                 className={cn("text-foreground w-full justify-start", {
-                  "bg-primary text-primary-foreground": pathnameWithoutLang === "",
+                  "bg-primary text-primary-foreground hover:!bg-primary/80": pathnameWithoutLang === "",
                 })}
                 variant="light"
                 color="primary"
@@ -30,12 +30,12 @@ export default function Sidebar({ dictionary }: { dictionary: TDictionary }) {
                 {dictionary.home}
               </Button>
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link href="/dbackup">
               <Button
                 className={cn("text-foreground w-full justify-start", {
-                  "bg-primary text-primary-foreground": pathnameWithoutLang === "/dbackup",
+                  "bg-primary text-primary-foreground hover:!bg-primary/80": pathnameWithoutLang.startsWith("/dbackup"),
                 })}
                 variant="light"
                 color="primary"

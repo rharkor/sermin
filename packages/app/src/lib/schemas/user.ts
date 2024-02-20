@@ -39,6 +39,15 @@ export const sessionsSchema = () =>
     ip: z.string(),
     lastUsedAt: z.coerce.date().nullable(),
     createdAt: z.coerce.date(),
+    user: z.object({
+      id: z.string(),
+      email: z.string().nullable(),
+      username: z.string().nullable(),
+      role: z.string(),
+      uuid: z.string(),
+      emailVerified: z.coerce.date().nullable(),
+      hasPassword: z.boolean(),
+    }),
   })
 
 export const deleteSessionSchema = () =>

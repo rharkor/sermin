@@ -40,6 +40,11 @@ const config = {
         destination: "/:lang/sign-up",
         permanent: process.env.ENV === "production" ? true : false,
       },
+      {
+        source: "/",
+        destination: "/dbackup",
+        permanent: false,
+      },
     ]
   },
 }

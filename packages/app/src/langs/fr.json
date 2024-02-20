@@ -1,5 +1,10 @@
 {
+  "lang": "fr",
   "errors": {
+    "failedToDeleteS3": "Echec de la suppression du fichier sur S3.",
+    "backupLogNotFound": "Log de sauvegarde introuvable.",
+    "backupAutoNotFound": "Sauvegarde automatique introuvable.",
+    "": "Une sauvegarde est déjà en cours.",
     "notImplemented": "Non implémenté.",
     "tooManyAttempts": "Trop de tentatives. Veuillez réessayer dans quelques minutes.",
     "otpInvalid": "Code OTP invalide.",
@@ -272,8 +277,44 @@
     "encryptionKeyPlaceholder": "myencryptionkey",
     "databaseLiteral": "Base de données",
     "s3": "S3",
-    "backupNow": "Sauvegarder maintenant"
+    "backupNow": "Sauvegarder maintenant",
+    "retentionDescription": "-1 => rétention infini",
+    "removeBackup": "Supprimer la sauvegarde automatique",
+    "removeBackupConfirmation": "Êtes-vous sûr de vouloir supprimer cette sauvegarde automatique ?",
+    "status": {
+      "RUNNING": "En cours",
+      "SUCCESS": "Succès",
+      "FAILED": "Echec",
+      "success": "Succès",
+      "deletingOldBackups": "Suppression des anciennes sauvegardes",
+      "dumping": "Dumping",
+      "compressing": "Compression",
+      "encrypting": "Chiffrement",
+      "uploading": "Upload",
+      "failed": "Echec"
+    },
+    "general": "Général",
+    "formatLiteral": "Format",
+    "restore": "Restaurer",
+    "searchName": "Rechercher par nom",
+    "deleted": "Supprimé",
+    "willBeDeleted": "Sera supprimé",
+    "never": "Jamais",
+    "removeLogConfirmation": "Êtes-vous sûr de vouloir supprimer cette backup ?",
+    "removeLog": "Supprimer la backup"
   },
   "appName": "SERMIN",
-  "seeMore": "Voir plus"
+  "seeMore": "Voir plus",
+  "duplicate": "Dupliquer",
+  "yes": "Oui",
+  "no": "Non",
+  "createdAt": "Créé le",
+  "updatedAt": "Mis à jour le",
+  "actions": "Actions",
+  "took": "a pris",
+  "hourFirstChar": "h",
+  "minuteFirstChar": "m",
+  "secondFirstChar": "s",
+  "dayFirstChar": "j",
+  "left": "restant"
 }

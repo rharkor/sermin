@@ -1,10 +1,13 @@
+import { NextApiRequest, NextApiResponse } from "next"
 import { Session } from "next-auth"
+import { IncomingMessage } from "http"
+import { WebSocket } from "ws"
 import { z } from "zod"
 
 export type ITrpcContext = {
   session: Session | null | undefined
-  headers: { [k: string]: string } | null | undefined
-  req: Request | null | undefined
+  req: NextApiRequest | IncomingMessage | Request | null | undefined
+  res: NextApiResponse | WebSocket | null | undefined
 }
 
 export type apiInputFromSchema<T extends (() => z.Schema) | undefined> = {

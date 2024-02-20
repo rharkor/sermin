@@ -110,7 +110,7 @@ model DatabaseBackup {
   s3Path       String
 
   // Cron
-  cron String
+  cron String?
 
   // Additionals
   pgVersion          String
@@ -118,6 +118,38 @@ model DatabaseBackup {
   pgFormat           String // plain, custom, directory, tar
   retention          Int // in days
   encryptionKey      String?
+
+  logs DatabaseBackupLog[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum DatabaseBackupStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+model DatabaseBackupLog {
+  id                 String               @id @default(cuid())
+  databaseBackup     DatabaseBackup       @relation(fields: [databaseBackupId], references: [id])
+  databaseBackupId   String
+  status             DatabaseBackupStatus
+  error              String?
+  startedAt          DateTime
+  finishedAt         DateTime?
+  size               Int?
+  name               String?
+  path               String?
+  retention          DateTime? // When it will be deleted
+  encryptionKey      String?
+  pgVersion          String
+  pgCompressionLevel Int
+  pgFormat           String
+
+  isDeleted Boolean @default(false)
 
   // Timestamps
   createdAt DateTime @default(now())

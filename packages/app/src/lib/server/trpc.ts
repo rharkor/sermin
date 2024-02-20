@@ -1,13 +1,16 @@
 import { Session } from "next-auth"
 import { env } from "env.mjs"
+import { IncomingMessage } from "http"
 import superjson from "superjson"
-import { ZodError } from "zod"
+import { z, ZodError } from "zod"
 
 import { getAuthApi } from "@/components/auth/require-auth"
 import { User } from "@prisma/client"
 import { initTRPC } from "@trpc/server"
 
-import { prisma } from "../prisma"
+import { redis } from "../redis"
+import { wsAuthenticatedSchema } from "../schemas/auth"
+import { sessionsSchema } from "../schemas/user"
 import { Context } from "../trpc/context"
 import { ApiError } from "../utils/server-utils"
 
@@ -41,20 +44,10 @@ const isAuthenticated = middleware(async (opts) => {
   if (!session) {
     ApiError("unauthorized", "UNAUTHORIZED")
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, ...user } = await prisma.user.findFirstOrThrow({
-    where: {
-      email: session.user.email,
-    },
-  })
   return opts.next({
     ctx: {
       ...opts.ctx,
-      session: {
-        ...session,
-        user,
-      } as Session & { user: Omit<User, "password"> },
+      session,
     },
   })
 })
@@ -70,3 +63,28 @@ const hasVerifiedEmail = middleware(async (opts) => {
 })
 export const authenticatedProcedure = publicProcedure.use(isAuthenticated).use(hasVerifiedEmail)
 export const authenticatedNoEmailVerificationProcedure = publicProcedure.use(isAuthenticated)
+
+const wsIsAuthenticated = middleware(async (opts) => {
+  const input = await wsAuthenticatedSchema()
+    .parseAsync(opts.rawInput)
+    .catch(() => null)
+  if (!input) return ApiError("unknownError", "BAD_REQUEST")
+  if (!opts.ctx.req || !opts.ctx.res) return ApiError("unauthorized", "UNAUTHORIZED")
+  if (!(opts.ctx.req instanceof IncomingMessage)) {
+    return ApiError("unauthorized", "UNAUTHORIZED")
+  }
+
+  const key = `session:${input.userId}:${input.uuid}`
+  const loginSession = await redis.get(key)
+  if (!loginSession) {
+    return ApiError("unauthorized", "UNAUTHORIZED")
+  }
+  const data = JSON.parse(loginSession) as z.infer<ReturnType<typeof sessionsSchema>>
+  return opts.next({
+    ctx: {
+      ...opts.ctx,
+      session: { user: data.user } as Session,
+    },
+  })
+})
+export const wsAuthenticatedProcedure = publicProcedure.use(wsIsAuthenticated)

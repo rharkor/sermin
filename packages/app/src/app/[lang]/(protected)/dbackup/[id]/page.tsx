@@ -1,25 +1,29 @@
 import { Locale } from "i18n-config"
+import { ChevronLeft } from "lucide-react"
 
-import { fontTitle } from "@/lib/fonts"
 import { getDictionary } from "@/lib/langs"
-import { cn } from "@/lib/utils"
 import { sectionClassName } from "@/types/constants"
+import { Link } from "@nextui-org/react"
 
-import Backups from "./backups"
+import DBackupContent from "./content"
 
 export default async function DBackup({
-  params: { lang },
+  params: { id, lang },
 }: {
   params: {
     lang: Locale
+    id: string
   }
 }) {
   const dictionary = await getDictionary(lang)
 
   return (
     <main className={sectionClassName}>
-      <h1 className={cn("m-1 text-4xl", fontTitle.className)}>{dictionary.dbackup.dbackup}</h1>
-      <Backups />
+      <Link href={`/dbackup`}>
+        <ChevronLeft className="size-6" />
+        {dictionary.dbackup.dbackup}
+      </Link>
+      <DBackupContent backupId={id} />
     </main>
   )
 }

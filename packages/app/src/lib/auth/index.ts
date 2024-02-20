@@ -88,6 +88,15 @@ export const providers: Provider[] = [
 
       //* Store user agent and ip address in session
       const uuid = randomUUID()
+      const uData = {
+        id: user.id.toString(),
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        uuid,
+        emailVerified: user.emailVerified,
+        hasPassword: user.hasPassword,
+      }
       try {
         const ua = req.headers?.["user-agent"] ?? ""
         const ip = requestIp.getClientIp(req) ?? ""
@@ -101,6 +110,7 @@ export const providers: Provider[] = [
           sessionToken: uuid,
           lastUsedAt: new Date(),
           createdAt: new Date(),
+          user: uData,
         }
         await redis.setex(`session:${user.id}:${uuid}`, JWT_MAX_AGE, JSON.stringify(body))
       } catch (error) {

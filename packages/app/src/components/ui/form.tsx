@@ -145,6 +145,7 @@ export type FormFieldProps<
   tooltip?: string
   type: InputProps["type"] | "password-eye-slash" | "slug"
   skeleton?: boolean
+  replacementContent?: string
 } & IWithPasswordStrenghProps
 
 const numberRegex = /[\d]/
@@ -163,6 +164,7 @@ export default function FormField<
   skeleton,
   passwordStrength,
   inputRef,
+  replacementContent,
   ...props
 }: FormFieldProps<TFieldValues, TName> & { inputRef?: Ref<HTMLInputElement> }) {
   const [isVisible, setIsVisible] = useState(false)
@@ -181,6 +183,8 @@ export default function FormField<
     }
   }
 
+  const [hasBeenTouched, setHasBeenTouched] = useState(false)
+
   let input = (
     <Controller
       name={name}
@@ -195,8 +199,12 @@ export default function FormField<
             },
             props.className
           )}
+          value={hasBeenTouched ? field.value : field.value || replacementContent}
           ref={inputRef}
-          onFocusChange={setIsFocused}
+          onFocusChange={() => {
+            setIsFocused(true)
+            setHasBeenTouched(true)
+          }}
           type={typeToRealType(type)}
           isInvalid={!!form.formState.errors[name]}
           errorMessage={form.formState.errors[name]?.message?.toString()}

@@ -15,7 +15,10 @@
     "isolatedModules": true,
     "incremental": true,
     "baseUrl": ".",
-    "rootDir": "."
+    "paths": {
+      "@cron/*": ["../cron/*"],
+      "@app/*": ["../app/*"]
+    }
   },
   "include": ["**/*.ts", "**/*.d.ts", ".eslintrc.js"],
   "exclude": ["node_modules"]

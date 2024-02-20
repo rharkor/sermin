@@ -1,19 +1,42 @@
 import {
+  backupNowResponseSchema,
+  backupNowSchema,
   createDatabaseBackupResponseSchema,
   createDatabaseBackupSchema,
   deleteDatabaseBackupResponseSchema,
   deleteDatabaseBackupSchema,
+  deleteLogResponseSchema,
+  deleteLogSchema,
+  duplicateDatabaseBackupResponseSchema,
+  duplicateDatabaseBackupSchema,
+  getBackupLogsResponseSchema,
+  getBackupLogsSchema,
   getDatabaseBackupResponseSchema,
   getDatabaseBackupSchema,
   getDatabaseBackupsResponseSchema,
   getDatabaseBackupsSchema,
+  onBackupStatusChangeSchema,
+  onNewBackupSchema,
   updateDatabaseBackupResponseSchema,
   updateDatabaseBackupSchema,
 } from "@/lib/schemas/backups"
-import { authenticatedNoEmailVerificationProcedure, authenticatedProcedure, router } from "@/lib/server/trpc"
+import {
+  authenticatedNoEmailVerificationProcedure,
+  authenticatedProcedure,
+  router,
+  wsAuthenticatedProcedure,
+} from "@/lib/server/trpc"
 
-import { createDatabaseBackup, deleteDatabaseBackup, updateDatabaseBackup } from "./mutations"
-import { getDatabaseBackup, getDatabaseBackups } from "./queries"
+import {
+  backupNow,
+  createDatabaseBackup,
+  deleteDatabaseBackup,
+  deleteLog,
+  duplicateDatabaseBackup,
+  updateDatabaseBackup,
+} from "./mutations"
+import { getBackupLogs, getDatabaseBackup, getDatabaseBackups } from "./queries"
+import { onBackupStatusChange, onNewBackup } from "./subscriptions"
 
 export const backupsRouter = router({
   getDatabaseBackups: authenticatedNoEmailVerificationProcedure
@@ -36,4 +59,16 @@ export const backupsRouter = router({
     .input(deleteDatabaseBackupSchema())
     .output(deleteDatabaseBackupResponseSchema())
     .mutation(deleteDatabaseBackup),
+  duplicateDatabaseBackup: authenticatedProcedure
+    .input(duplicateDatabaseBackupSchema())
+    .output(duplicateDatabaseBackupResponseSchema())
+    .mutation(duplicateDatabaseBackup),
+  backupNow: authenticatedProcedure.input(backupNowSchema()).output(backupNowResponseSchema()).mutation(backupNow),
+  onBackupStatusChange: wsAuthenticatedProcedure.input(onBackupStatusChangeSchema()).subscription(onBackupStatusChange),
+  getBackupLogs: authenticatedNoEmailVerificationProcedure
+    .input(getBackupLogsSchema())
+    .output(getBackupLogsResponseSchema())
+    .query(getBackupLogs),
+  onNewBackup: wsAuthenticatedProcedure.input(onNewBackupSchema()).subscription(onNewBackup),
+  deleteLog: authenticatedProcedure.input(deleteLogSchema()).output(deleteLogResponseSchema()).mutation(deleteLog),
 })

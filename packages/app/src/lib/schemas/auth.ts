@@ -93,3 +93,9 @@ export const recover2FAResponseSchema = () =>
   z.object({
     success: z.boolean(),
   })
+
+export const wsAuthenticatedSchema = () =>
+  z.object({
+    uuid: z.string(),
+    userId: z.string(),
+  })
