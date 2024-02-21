@@ -1,4 +1,4 @@
-import { CronJob, CronTime } from "cron"
+import { CronJob } from "cron"
 import { z } from "zod"
 
 import { prisma } from "@/lib/prisma"
@@ -9,6 +9,7 @@ const cronJobs: {
   id: string
   kind: "dbackup"
   cron: CronJob
+  opts: string
 }[] = []
 
 export const fetchDbBackups = async () => {
@@ -28,33 +29,32 @@ export const fetchDbBackups = async () => {
   toAdd.forEach((id) => {
     const cron = dbackup.find((d) => d.id === id)
     if (!cron || !cron.cron) return
-    const cronJob = new CronJob(
-      cron.cron,
-      () =>
-        dbackupCron({
-          id: cron.id,
-          PGHOST: cron.host,
-          PGPORT: cron.port.toString(),
-          PGUSER: cron.username,
-          PGDATABASE: cron.database,
-          PGPASSWORD: cron.password,
-          PG_VERSION: cron.pgVersion as z.infer<typeof dumpOptionsSchema>["PG_VERSION"],
-          PG_COMPRESSION_LEVEL: cron.pgCompressionLevel,
-          PG_FORMAT: cron.pgFormat as z.infer<typeof dumpOptionsSchema>["PG_FORMAT"],
-          ENCRYPTION_KEY: cron.encryptionKey,
-          RETENTION: cron.retention,
-          S3_BUCKET: cron.s3BucketName,
-          S3_REGION: cron.s3Region,
-          S3_ACCESS_KEY: cron.s3AccessKey,
-          S3_SECRET_KEY: cron.s3SecretKey,
-          S3_ENDPOINT: cron.s3Endpoint,
-          S3_PATH: cron.s3Path,
-        }),
-      null,
-      true,
-      "UTC"
-    )
-    cronJobs.push({ id, kind: "dbackup", cron: cronJob })
+    const options = {
+      id: cron.id,
+      PGHOST: cron.host,
+      PGPORT: cron.port.toString(),
+      PGUSER: cron.username,
+      PGDATABASE: cron.database,
+      PGPASSWORD: cron.password,
+      PG_VERSION: cron.pgVersion as z.infer<typeof dumpOptionsSchema>["PG_VERSION"],
+      PG_COMPRESSION_LEVEL: cron.pgCompressionLevel,
+      PG_FORMAT: cron.pgFormat as z.infer<typeof dumpOptionsSchema>["PG_FORMAT"],
+      ENCRYPTION_KEY: cron.encryptionKey,
+      RETENTION: cron.retention,
+      S3_BUCKET: cron.s3BucketName,
+      S3_REGION: cron.s3Region,
+      S3_ACCESS_KEY: cron.s3AccessKey,
+      S3_SECRET_KEY: cron.s3SecretKey,
+      S3_ENDPOINT: cron.s3Endpoint,
+      S3_PATH: cron.s3Path,
+    }
+    const cronJob = new CronJob(cron.cron, () => dbackupCron(options), null, true, "UTC")
+    cronJobs.push({
+      id,
+      kind: "dbackup",
+      cron: cronJob,
+      opts: JSON.stringify(options),
+    })
     cronJob.start()
     logger.debug(`CronJob ${id} started`)
   })
@@ -64,11 +64,33 @@ export const fetchDbBackups = async () => {
     if (!cron) return
     const cronJob = cronJobs.find((c) => c.id === id)
     if (!cronJob) return
-    if (cronJob.cron.cronTime.source === cron.cron) return
+    const options = {
+      id: cron.id,
+      PGHOST: cron.host,
+      PGPORT: cron.port.toString(),
+      PGUSER: cron.username,
+      PGDATABASE: cron.database,
+      PGPASSWORD: cron.password,
+      PG_VERSION: cron.pgVersion as z.infer<typeof dumpOptionsSchema>["PG_VERSION"],
+      PG_COMPRESSION_LEVEL: cron.pgCompressionLevel,
+      PG_FORMAT: cron.pgFormat as z.infer<typeof dumpOptionsSchema>["PG_FORMAT"],
+      ENCRYPTION_KEY: cron.encryptionKey,
+      RETENTION: cron.retention,
+      S3_BUCKET: cron.s3BucketName,
+      S3_REGION: cron.s3Region,
+      S3_ACCESS_KEY: cron.s3AccessKey,
+      S3_SECRET_KEY: cron.s3SecretKey,
+      S3_ENDPOINT: cron.s3Endpoint,
+      S3_PATH: cron.s3Path,
+    }
+    if (cronJob.cron.cronTime.source === cron.cron && cronJob.opts === JSON.stringify(options)) return
     if (!cron.cron) cronJob.cron.stop()
     else {
-      cronJob.cron.setTime(new CronTime(cron.cron))
-      cronJob.cron.start()
+      cronJob.cron.stop()
+      cronJobs.splice(cronJobs.indexOf(cronJob), 1)
+      const newCron = new CronJob(cron.cron, () => dbackupCron(options), null, true, "UTC")
+      cronJobs.push({ id, kind: "dbackup", cron: newCron, opts: JSON.stringify(options) })
+      newCron.start()
     }
     logger.debug(`CronJob ${id} updated`)
   })
