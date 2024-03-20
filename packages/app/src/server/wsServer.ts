@@ -12,9 +12,9 @@ const wss = new WebSocketServer({
 const handler = applyWSSHandler({ wss, router: appRouter, createContext })
 
 wss.on("connection", (ws) => {
-  logger.debug(`+ Connection (${wss.clients.size})`)
+  logger.info(`+ Connection (${wss.clients.size})`)
   ws.once("close", () => {
-    logger.debug(`- Connection (${wss.clients.size})`)
+    logger.info(`- Connection (${wss.clients.size})`)
   })
 })
 logger.info("WebSocket Server listening on ws://localhost:3001")
