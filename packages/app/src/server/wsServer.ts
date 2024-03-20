@@ -1,7 +1,7 @@
-import { exit } from "process"
 import { WebSocketServer } from "ws"
 
 import { appRouter } from "@/api/_app"
+import { prisma } from "@/lib/prisma"
 import { createContext } from "@/lib/trpc/context"
 import { logger } from "@lib/logger"
 import { applyWSSHandler } from "@trpc/server/adapters/ws"
@@ -12,9 +12,9 @@ const wss = new WebSocketServer({
 const handler = applyWSSHandler({ wss, router: appRouter, createContext })
 
 wss.on("connection", (ws) => {
-  logger.info(`+ Connection (${wss.clients.size})`)
+  logger.debug(`+ Connection (${wss.clients.size})`)
   ws.once("close", () => {
-    logger.info(`- Connection (${wss.clients.size})`)
+    logger.debug(`- Connection (${wss.clients.size})`)
   })
 })
 logger.info("WebSocket Server listening on ws://localhost:3001")
@@ -22,5 +22,5 @@ logger.info("WebSocket Server listening on ws://localhost:3001")
 process.on("SIGTERM", () => {
   handler.broadcastReconnectNotification()
   wss.close()
-  exit(0)
+  prisma.$disconnect()
 })
