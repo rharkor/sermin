@@ -86,7 +86,7 @@ export default function AddBackup({
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent className="scrollbar-thin max-h-[80vh] overflow-auto">
-        {(onClose) => (
+        {(onClose: () => void) => (
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <ModalHeader>{dictionary.dbackup.createBackup}</ModalHeader>
             <ModalBody className="flex flex-col gap-2 px-5 py-1">
@@ -291,7 +291,7 @@ export default function AddBackup({
               <Button variant="flat" onPress={onClose}>
                 {dictionary.cancel}
               </Button>
-              <Button color="primary" type="submit" isLoading={createBackupMutation.isLoading}>
+              <Button color="primary" type="submit" isLoading={createBackupMutation.isPending}>
                 {dictionary.create}
               </Button>
             </ModalFooter>

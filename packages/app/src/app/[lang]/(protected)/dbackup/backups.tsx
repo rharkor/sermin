@@ -143,7 +143,7 @@ export default function Backups() {
         </Button>
       </div>
       <div className="flex flex-col gap-2">
-        {(backups.isLoading ? skeletonRows : backups.data?.backups ?? []).map((backup) => (
+        {(backups.isLoading ? skeletonRows : (backups.data?.backups ?? [])).map((backup) => (
           <Link
             key={backup.id}
             className={cn("rounded-medium bg-content1 group flex cursor-pointer flex-row items-center gap-4 p-2", {
@@ -230,7 +230,7 @@ export default function Backups() {
                   variant="light"
                   className="ml-auto h-max min-w-0 shrink-0 p-3"
                   isDisabled={backups.isLoading}
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.preventDefault()
                     e.stopPropagation()
                   }}

@@ -43,7 +43,7 @@ export default function VerifyEmailButton({ session }: { session: Session }) {
   return (
     <Button
       onClick={handleResendVerificationEmail}
-      isLoading={resendVerificationEmailMutation.isLoading}
+      isLoading={resendVerificationEmailMutation.isPending}
       className="flex-1 md:w-max"
       variant="flat"
       color="primary"

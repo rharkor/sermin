@@ -64,7 +64,7 @@ export default function TotpVerificationModal({
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
-        {(onClose) => (
+        {(onClose: () => void) => (
           <>
             <ModalHeader>
               <ModalTitle>{title}</ModalTitle>
@@ -91,7 +91,7 @@ export default function TotpVerificationModal({
                   handleConfirm()
                 }}
                 isDisabled={otp.length !== 6}
-                isLoading={verifyTotpMutation.isLoading || isLoading}
+                isLoading={verifyTotpMutation.isPending || isLoading}
               >
                 {submitText}
               </Button>
