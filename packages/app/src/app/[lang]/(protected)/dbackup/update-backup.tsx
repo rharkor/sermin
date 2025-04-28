@@ -71,7 +71,7 @@ export default function UpdateBackup({
       s3Path: backup.data?.backup.s3Path ?? "",
       cron: backup.data?.backup.cron ?? "0 2 * * *",
       // Additionals
-      pgVersion: (backup.data?.backup.pgVersion as z.infer<ReturnType<typeof formSchema>>["pgVersion"]) ?? "16",
+      pgVersion: (backup.data?.backup.pgVersion as z.infer<ReturnType<typeof formSchema>>["pgVersion"]) ?? "17",
       pgCompressionLevel: backup.data?.backup.pgCompressionLevel ?? 9,
       pgFormat: (backup.data?.backup.pgFormat as z.infer<ReturnType<typeof formSchema>>["pgFormat"]) ?? "custom",
       encryptionKey: "",

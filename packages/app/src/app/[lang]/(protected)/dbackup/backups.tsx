@@ -49,7 +49,7 @@ const skeletonRows: z.infer<ReturnType<typeof getDatabaseBackupsResponseSchema>>
   s3Endpoint: "",
   s3Path: "",
   cron: "",
-  pgVersion: "16",
+  pgVersion: "17",
   pgCompressionLevel: 0,
   pgFormat: "custom",
   retention: 0,

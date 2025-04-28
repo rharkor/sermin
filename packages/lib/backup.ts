@@ -26,7 +26,7 @@ export const dumpOptionsSchema = z.object({
   PGUSER: z.string(),
   PGDATABASE: z.string(),
   PGPASSWORD: z.string(),
-  PG_VERSION: z.enum(["13", "14", "15", "16"]),
+  PG_VERSION: z.enum(["13", "14", "15", "16", "17"]),
   PG_COMPRESSION_LEVEL: z.number().min(0).max(9),
   PG_FORMAT: z.enum(["custom", "directory", "tar", "plain"]),
   ENCRYPTION_KEY: z.string().nullable(),
