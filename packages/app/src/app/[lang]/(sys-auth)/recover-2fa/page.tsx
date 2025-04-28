@@ -9,15 +9,17 @@ import Recover2FAForm from "./form"
 
 export default async function Recover2FA({
   searchParams,
-  params: { lang },
+  params,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
-  params: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: Promise<{
     lang: Locale
-  }
+  }>
 }) {
+  const { lang } = await params
   const dictionary = await getDictionary(lang)
-  const email = searchParams.email as string | undefined
+  const resolvedSearchParams = await searchParams
+  const email = resolvedSearchParams.email as string | undefined
 
   return (
     <main className="container m-auto flex min-h-screen flex-1 flex-col items-center justify-center space-y-2">

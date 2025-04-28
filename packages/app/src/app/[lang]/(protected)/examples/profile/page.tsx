@@ -11,12 +11,13 @@ import { getDictionary } from "@/lib/langs"
 import { Card, CardBody, CardHeader } from "@nextui-org/react"
 
 export default async function Profile({
-  params: { lang },
+  params,
 }: {
-  params: {
+  params: Promise<{
     lang: Locale
-  }
+  }>
 }) {
+  const { lang } = await params
   const dictionary = await getDictionary(lang)
   const session = await getServerSession(nextAuthOptions)
 

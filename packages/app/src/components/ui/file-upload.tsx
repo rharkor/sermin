@@ -81,9 +81,10 @@ export default function FileUpload({
   const [croppedFiles, setCroppedFiles] = useState<File[]>([])
   useEffect(() => {
     if (!acceptedFiles.length) return
-    onFilesChange?.(acceptedFiles)
-    setFiles(acceptedFiles)
-    setCroppedFiles(acceptedFiles)
+    const filesArray = [...acceptedFiles]
+    onFilesChange?.(filesArray)
+    setFiles(filesArray)
+    setCroppedFiles(filesArray)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [acceptedFiles])
 

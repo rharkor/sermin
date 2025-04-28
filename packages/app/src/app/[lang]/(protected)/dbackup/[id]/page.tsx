@@ -7,14 +7,15 @@ import { Link } from "@nextui-org/react"
 
 import DBackupContent from "./content"
 
-export default async function DBackup({
-  params: { id, lang },
-}: {
-  params: {
-    lang: Locale
+interface Props {
+  params: Promise<{
     id: string
-  }
-}) {
+    lang: Locale
+  }>
+}
+
+export default async function DBackup({ params }: Props) {
+  const { id, lang } = await params
   const dictionary = await getDictionary(lang)
 
   return (
