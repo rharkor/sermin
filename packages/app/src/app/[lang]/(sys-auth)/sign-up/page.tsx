@@ -14,16 +14,17 @@ import Providers from "../providers"
 
 export default async function SignUpPage({
   searchParams,
-  params: { lang },
+  params,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
-  params: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: Promise<{
     lang: Locale
-  }
+  }>
 }) {
+  const { lang } = await params
   const dictionary = await getDictionary(lang)
   const session = await getServerSession(nextAuthOptions)
-
+  const resolvedSearchParams = await searchParams
   return (
     <main className="container relative m-auto grid min-h-screen flex-1 flex-col items-center justify-center px-2 lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Button
@@ -42,7 +43,7 @@ export default async function SignUpPage({
             <p className="text-muted-foreground text-sm">{dictionary.signUpPage.enterEmail}</p>
           </div>
           <div className="grid gap-6">
-            <RegisterUserAuthForm isMinimized searchParams={searchParams} locale={lang} />
+            <RegisterUserAuthForm isMinimized searchParams={resolvedSearchParams} locale={lang} />
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -51,7 +52,7 @@ export default async function SignUpPage({
                 <span className="bg-background text-muted-foreground px-2">{dictionary.auth.orContinueWith}</span>
               </div>
             </div>
-            <Providers searchParams={searchParams} session={session} />
+            <Providers searchParams={resolvedSearchParams} session={session} />
           </div>
           <PrivacyAcceptance dictionary={dictionary} />
         </div>

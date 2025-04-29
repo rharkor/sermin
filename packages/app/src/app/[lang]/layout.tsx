@@ -25,15 +25,18 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { lang: string }
+  params: Promise<{
+    lang: string
+  }>
 }) {
+  const { lang } = await params
   //? If locale is not found, return 404
-  if (!i18n.locales.includes(params.lang)) return redirect(`/${i18n.defaultLocale}/${params.lang}`)
+  if (!i18n.locales.includes(lang)) return redirect(`/${i18n.defaultLocale}/${lang}`)
 
-  const dictionary = await getDictionary(params.lang as Locale)
+  const dictionary = await getDictionary(lang as Locale)
 
   return (
-    <html lang={params.lang}>
+    <html lang={lang}>
       <body className={cn("antialiaseds bg-background min-h-screen font-sans", fontSans.variable)}>
         <RootProviders dictionary={dictionary}>{children}</RootProviders>
       </body>

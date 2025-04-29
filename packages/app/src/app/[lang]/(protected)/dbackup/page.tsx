@@ -8,12 +8,13 @@ import { sectionClassName } from "@/types/constants"
 import Backups from "./backups"
 
 export default async function DBackup({
-  params: { lang },
+  params,
 }: {
-  params: {
+  params: Promise<{
     lang: Locale
-  }
+  }>
 }) {
+  const { lang } = await params
   const dictionary = await getDictionary(lang)
 
   return (

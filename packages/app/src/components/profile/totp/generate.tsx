@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { QRCodeSVG } from "qrcode.react"
 import { toast } from "react-toastify"
 
@@ -96,7 +96,7 @@ export default function GenerateTotp({ account }: { account: ReturnType<typeof u
             onClick={() => {
               setDesactivate2FAModalOpen(true)
             }}
-            isLoading={desactivate2FAMutation.isLoading}
+            isLoading={desactivate2FAMutation.isPending}
           >
             {dictionary.totp.desactivate}
           </Button>
@@ -106,7 +106,7 @@ export default function GenerateTotp({ account }: { account: ReturnType<typeof u
             onClick={() => {
               setIsModalOpen(true)
             }}
-            isLoading={generateTotpSecretMutation.isLoading}
+            isLoading={generateTotpSecretMutation.isPending}
           >
             {dictionary.totp.generate}
           </Button>
@@ -114,7 +114,7 @@ export default function GenerateTotp({ account }: { account: ReturnType<typeof u
       </Skeleton>
       <Modal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
         <ModalContent>
-          {(onClose) => (
+          {(onClose: () => void) => (
             <>
               <ModalHeader>
                 <ModalTitle>{dictionary.totp.generateTitle}</ModalTitle>
@@ -264,7 +264,7 @@ export default function GenerateTotp({ account }: { account: ReturnType<typeof u
                     (modalIndex === 2 && mnemonicVerif !== totpSecretData?.mnemonic) ||
                     (modalIndex === 3 && otp.length !== 6)
                   }
-                  isLoading={verifyTotpMutation.isLoading}
+                  isLoading={verifyTotpMutation.isPending}
                 >
                   {modalIndex !== 3 ? dictionary.continue : dictionary.confirm}
                 </Button>
@@ -283,7 +283,7 @@ export default function GenerateTotp({ account }: { account: ReturnType<typeof u
         closeText={dictionary.cancel}
         onlyPrompt
         isDanger
-        isLoading={desactivate2FAMutation.isLoading}
+        isLoading={desactivate2FAMutation.isPending}
       />
     </div>
   )

@@ -66,7 +66,7 @@ export const authenticatedNoEmailVerificationProcedure = publicProcedure.use(isA
 
 const wsIsAuthenticated = middleware(async (opts) => {
   const input = await wsAuthenticatedSchema()
-    .parseAsync(opts.rawInput)
+    .parseAsync(opts.input)
     .catch(() => null)
   if (!input) return ApiError("unknownError", "BAD_REQUEST")
   if (!opts.ctx.req || !opts.ctx.res) return ApiError("unauthorized", "UNAUTHORIZED")

@@ -16,7 +16,7 @@ export default function Searchbar({
   const [searchValue, setSearchValue] = useState(value)
 
   //? Debounce the search
-  const debounce = useRef<NodeJS.Timeout>()
+  const debounce = useRef<NodeJS.Timeout | undefined>(undefined)
   const onValueChange = (value: string) => {
     setSearchValue(value)
     if (debounce.current) clearTimeout(debounce.current)

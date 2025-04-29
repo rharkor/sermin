@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { AppRouter } from "@/api/_app"
 import { useDictionary } from "@/contexts/dictionary/utils"
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { TRPCClientErrorLike } from "@trpc/client"
+import { TRPCClientError, TRPCClientErrorLike } from "@trpc/client"
 
 import { handleMutationError, handleQueryError } from "../utils/client-utils"
 
@@ -30,13 +30,17 @@ export default function TrpcProvider({ children }: { children: React.ReactNode }
         queryCache: new QueryCache({
           onError: (error, query) => {
             if (testNoDefaultErrorHandling(query)) return
-            handleQueryError(error as TRPCClientErrorLike<AppRouter>, dictionary, router)
+            if (error instanceof TRPCClientError) {
+              handleQueryError(error as TRPCClientErrorLike<AppRouter>, dictionary, router)
+            }
           },
         }),
         mutationCache: new MutationCache({
           onError: (error, _v, _c, mutation) => {
             if (testNoDefaultErrorHandling(mutation)) return
-            handleMutationError(error as TRPCClientErrorLike<AppRouter>, dictionary, router)
+            if (error instanceof TRPCClientError) {
+              handleMutationError(error as TRPCClientErrorLike<AppRouter>, dictionary, router)
+            }
           },
         }),
       })

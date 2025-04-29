@@ -1,5 +1,6 @@
 FROM node:20-alpine AS deps
 
+RUN apk add --no-cache openssl
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
@@ -17,6 +18,7 @@ RUN npm i --only=production
 
 FROM node:20-alpine AS builder
 
+RUN apk add --no-cache openssl
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
@@ -34,6 +36,7 @@ RUN npm run build -w packages/app
 
 FROM node:20-alpine AS runner
 
+RUN apk add --no-cache openssl
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 

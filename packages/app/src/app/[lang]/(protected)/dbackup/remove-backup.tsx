@@ -39,7 +39,7 @@ export default function RemoveBackup({
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent className="scrollbar-thin max-h-[80vh] overflow-auto">
-        {(onClose) => (
+        {(onClose: () => void) => (
           <>
             <ModalHeader>{dictionary.dbackup.removeBackup}</ModalHeader>
             <ModalBody className="flex flex-col gap-2">
@@ -52,7 +52,7 @@ export default function RemoveBackup({
               <Button
                 color="danger"
                 type="submit"
-                isLoading={removeBackupMutation.isLoading}
+                isLoading={removeBackupMutation.isPending}
                 onPress={handleRemoveBackup}
               >
                 {dictionary.delete}

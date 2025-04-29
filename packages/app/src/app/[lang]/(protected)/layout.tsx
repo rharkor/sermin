@@ -9,13 +9,14 @@ import Sidebar from "./sidebar"
 
 export default async function ProtectedLayout({
   children,
-  params: { lang },
+  params,
 }: {
   children: React.ReactNode
-  params: {
+  params: Promise<{
     lang: Locale
-  }
+  }>
 }) {
+  const { lang } = await params
   const session = await requireAuth()
 
   //* Set last locale

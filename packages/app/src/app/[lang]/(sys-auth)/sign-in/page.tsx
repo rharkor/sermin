@@ -15,16 +15,17 @@ import Providers from "../providers"
 
 export default async function SignInPage({
   searchParams,
-  params: { lang },
+  params,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
-  params: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: Promise<{
     lang: Locale
-  }
+  }>
 }) {
+  const { lang } = await params
   const dictionary = await getDictionary(lang)
   const session = await getServerSession(nextAuthOptions)
-
+  const resolvedSearchParams = await searchParams
   return (
     <main className="container relative m-auto grid min-h-screen flex-1 flex-col items-center justify-center px-2 lg:max-w-none lg:grid-cols-2 lg:px-0">
       {env.ENABLE_REGISTRATION && (
@@ -45,7 +46,7 @@ export default async function SignInPage({
             <p className="text-muted-foreground text-sm">{dictionary.signInPage.enterDetails}</p>
           </div>
           <div className="grid gap-6">
-            <LoginUserAuthForm searchParams={searchParams} />
+            <LoginUserAuthForm searchParams={resolvedSearchParams} />
             {env.ENABLE_REGISTRATION && (
               <>
                 <div className="relative">
@@ -56,7 +57,7 @@ export default async function SignInPage({
                     <span className="bg-background text-muted-foreground px-2">{dictionary.auth.orContinueWith}</span>
                   </div>
                 </div>
-                <Providers searchParams={searchParams} session={session} />
+                <Providers searchParams={resolvedSearchParams} session={session} />
               </>
             )}
           </div>

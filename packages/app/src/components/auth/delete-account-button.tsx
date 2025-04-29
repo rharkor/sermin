@@ -39,7 +39,7 @@ export default function DeleteAccountButton({ children }: { children: React.Reac
       </Button>
       <Modal isOpen={showModal} onOpenChange={(open) => setShowModal(open)}>
         <ModalContent>
-          {(onClose) => (
+          {(onClose: () => void) => (
             <>
               <ModalHeader>
                 <ModalTitle>{dictionary.deleteAccountConfirmationTitle}</ModalTitle>
