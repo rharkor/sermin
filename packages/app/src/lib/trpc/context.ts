@@ -4,7 +4,7 @@ import { WebSocket } from "ws"
 import { ITrpcContext } from "@/types"
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch"
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next"
-import { NodeHTTPCreateContextFnOptions } from "@trpc/server/dist/adapters/node-http"
+import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http"
 
 export function createContext(
   opts?:
