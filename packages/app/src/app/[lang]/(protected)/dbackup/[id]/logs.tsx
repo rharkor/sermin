@@ -42,7 +42,7 @@ const skeletonRows: z.infer<ReturnType<typeof getBackupLogsResponseSchema>>["log
   pgFormat: "test",
   pgVersion: "test",
   retention: new Date(),
-  size: 0,
+  size: 0n,
   startedAt: new Date(),
   status: "RUNNING",
   createdAt: new Date(),
@@ -198,7 +198,7 @@ export default function DBackupLogs({ backupId }: { backupId: string }) {
               isLoaded={!logs.isLoading}
             >
               <p className="text-muted-foreground min-w-[180px] flex-1 truncate">
-                {!!backup.size ? `~ ${Math.round(backup.size / 1024 / 1024)} MB` : "-"}
+                {!!backup.size ? `~ ${Math.round(Number(backup.size) / 1024 / 1024)} MB` : "-"}
               </p>
             </Skeleton>
             <Skeleton

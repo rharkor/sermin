@@ -296,7 +296,7 @@ export const dbackupCron = async (
       data: {
         finishedAt: new Date(),
         status: "SUCCESS",
-        size: data.size,
+        size: BigInt(data.size),
         name: data.name,
         path: data.path,
       },

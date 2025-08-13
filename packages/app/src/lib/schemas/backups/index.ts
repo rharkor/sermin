@@ -191,7 +191,7 @@ export const backupLogSchema = () =>
     error: z.string().nullable(),
     startedAt: z.date(),
     finishedAt: z.date().nullable(),
-    size: z.number().nullable(),
+    size: z.bigint().nullable(),
     name: z.string().nullable(),
     path: z.string().nullable(),
     retention: z.date().nullable(),
