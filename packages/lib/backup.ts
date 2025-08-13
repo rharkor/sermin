@@ -250,14 +250,9 @@ export const dbackupCron = async (
         const bucketName = options.S3_BUCKET
         const tenMB = 10 * 1024 * 1024
 
-        // const twentyFiveMB = 25 * 1024 * 1024
-        // const createString = (size = twentyFiveMB) => {
-        //   return "x".repeat(size)
-        // }
-        // const str = createString()
-        // const buffer = Buffer.from(str, "utf8")
-        const buffer = await fs.readFile(finalPath)
-        size = buffer.length
+        // Get file size without loading entire file into memory
+        const fileStats = await fs.stat(finalPath)
+        size = fileStats.size
 
         const multipartUpload = async () => {
           let uploadId: string | undefined = ""
@@ -273,28 +268,35 @@ export const dbackupCron = async (
 
             const uploadPromises = []
             // Multipart uploads require a minimum size of 5 MB per part.
-            const numberOfParts = Math.ceil(buffer.length / tenMB)
-            const partSize = Math.ceil(buffer.length / numberOfParts)
+            const numberOfParts = Math.ceil(size / tenMB)
+            const partSize = Math.ceil(size / numberOfParts)
 
-            // Upload each part.
+            // Upload each part using streaming to avoid memory issues.
             for (let i = 0; i < numberOfParts; i++) {
               const start = i * partSize
-              const end = start + partSize
+              const end = Math.min(start + partSize, size)
+
               uploadPromises.push(
-                s3Client
-                  .send(
-                    new UploadPartCommand({
-                      Bucket: bucketName,
-                      Key: key,
-                      UploadId: uploadId,
-                      Body: buffer.subarray(start, end),
-                      PartNumber: i + 1,
-                    })
-                  )
-                  .then((d) => {
+                (async () => {
+                  const partBuffer = Buffer.alloc(end - start)
+                  const fileHandle = await fs.open(finalPath, "r")
+                  try {
+                    await fileHandle.read(partBuffer, 0, end - start, start)
+                    const result = await s3Client.send(
+                      new UploadPartCommand({
+                        Bucket: bucketName,
+                        Key: key,
+                        UploadId: uploadId,
+                        Body: partBuffer,
+                        PartNumber: i + 1,
+                      })
+                    )
                     console.log("Part", i + 1, "uploaded")
-                    return d
-                  })
+                    return result
+                  } finally {
+                    await fileHandle.close()
+                  }
+                })()
               )
             }
 
@@ -325,9 +327,12 @@ export const dbackupCron = async (
 
               await s3Client.send(abortCommand)
             }
+            throw err
           }
         }
         const singlePartUpload = async () => {
+          // For smaller files, we can still use readFile safely
+          const buffer = await fs.readFile(finalPath)
           return await s3Client.send(
             new PutObjectCommand({
               Bucket: bucketName,
@@ -338,9 +343,9 @@ export const dbackupCron = async (
         }
 
         logger.debug(
-          `[${now.toLocaleString()}] ${name} uploading dump (${Math.round((buffer.length / 1024 / 1024) * 100) / 100} MB) file to S3`
+          `[${now.toLocaleString()}] ${name} uploading dump (${Math.round((size / 1024 / 1024) * 100) / 100} MB) file to S3`
         )
-        if (buffer.length > tenMB) {
+        if (size > tenMB) {
           await multipartUpload()
         } else {
           await singlePartUpload()
