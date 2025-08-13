@@ -41,7 +41,7 @@ export default function Recover2FAForm({ email }: { email?: string }) {
     recover2FAMutation.mutate(data)
   }
 
-  const isLoading = recover2FAMutation.isLoading
+  const isLoading = recover2FAMutation.isPending
 
   const [mnemonic, setMnemonic] = useState(new Array(12).fill(""))
   const handleChange = (element: HTMLInputElement, index: number) => {

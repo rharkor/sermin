@@ -11,23 +11,25 @@ import { Button, Card, CardBody, CardHeader } from "@nextui-org/react"
 
 export default async function SignupByCredentials({
   searchParams,
-  params: { lang },
+  params,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
-  params: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: Promise<{
     lang: Locale
-  }
+  }>
 }) {
+  const { lang } = await params
   const dictionary = await getDictionary(lang)
+  const resolvedSearchParams = await searchParams
 
   //? If there is no email in the search params, redirect to the sign-up page
-  if (!searchParams.email) {
+  if (!resolvedSearchParams.email) {
     redirect(authRoutes.signUp[0])
   }
 
   return (
     <main className="container relative m-auto flex min-h-screen flex-1 flex-col items-center justify-center px-2 lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <Link href={{ pathname: authRoutes.signUp[0], query: { email: searchParams.email } }}>
+      <Link href={{ pathname: authRoutes.signUp[0], query: { email: resolvedSearchParams.email } }}>
         <Button className="absolute left-2 top-2 min-w-0 p-2" size={"sm"}>
           <ChevronRight className="size-4 rotate-180" />
         </Button>
@@ -37,7 +39,7 @@ export default async function SignupByCredentials({
           <CardTitle>{dictionary.signUpPage.createAnAccount}</CardTitle>
         </CardHeader>
         <CardBody>
-          <RegisterUserAuthForm className="gap-3" searchParams={searchParams} locale={lang} />
+          <RegisterUserAuthForm className="gap-3" searchParams={resolvedSearchParams} locale={lang} />
         </CardBody>
       </Card>
     </main>

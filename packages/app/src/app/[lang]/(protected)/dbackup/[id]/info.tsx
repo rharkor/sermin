@@ -151,12 +151,12 @@ export default function DBackupInfo({
             <Button
               color="primary"
               onPress={handleInstantBackup}
-              isLoading={instantBackup.isLoading}
+              isLoading={instantBackup.isPending}
               isDisabled={
-                instantBackup.isLoading ||
+                instantBackup.isPending ||
                 (status !== "SUCCESS" && status !== "success" && status !== "FAILED" && status !== "failed")
               }
-              startContent={!instantBackup.isLoading && <DatabaseBackup className="size-4" />}
+              startContent={!instantBackup.isPending && <DatabaseBackup className="size-4" />}
             >
               {dictionary.dbackup.backupNow}
             </Button>

@@ -71,7 +71,7 @@ export default function UpdateBackup({
       s3Path: backup.data?.backup.s3Path ?? "",
       cron: backup.data?.backup.cron ?? "0 2 * * *",
       // Additionals
-      pgVersion: (backup.data?.backup.pgVersion as z.infer<ReturnType<typeof formSchema>>["pgVersion"]) ?? "16",
+      pgVersion: (backup.data?.backup.pgVersion as z.infer<ReturnType<typeof formSchema>>["pgVersion"]) ?? "17",
       pgCompressionLevel: backup.data?.backup.pgCompressionLevel ?? 9,
       pgFormat: (backup.data?.backup.pgFormat as z.infer<ReturnType<typeof formSchema>>["pgFormat"]) ?? "custom",
       encryptionKey: "",
@@ -97,7 +97,7 @@ export default function UpdateBackup({
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent className="scrollbar-thin max-h-[80vh] overflow-auto">
-        {(onClose) => (
+        {(onClose: () => void) => (
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <ModalHeader>{dictionary.update}</ModalHeader>
             <ModalBody className="flex flex-col gap-2 px-5 py-1">
@@ -325,8 +325,8 @@ export default function UpdateBackup({
               <Button
                 color="primary"
                 type="submit"
-                isLoading={updateBackupMutation.isLoading}
-                isDisabled={backup.isLoading || updateBackupMutation.isLoading}
+                isLoading={updateBackupMutation.isPending}
+                isDisabled={backup.isLoading || updateBackupMutation.isPending}
               >
                 {dictionary.update}
               </Button>

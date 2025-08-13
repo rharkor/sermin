@@ -8,13 +8,14 @@ import { getDictionary } from "@/lib/langs"
 import ResetPasswordForm from "./form"
 
 export default async function ForgotPassword({
-  params: { lang, token },
+  params,
 }: {
-  params: {
+  params: Promise<{
     lang: Locale
     token: string
-  }
+  }>
 }) {
+  const { lang, token } = await params
   const dictionary = await getDictionary(lang)
 
   return (

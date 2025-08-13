@@ -121,7 +121,7 @@ export default function DBackupLogs({ backupId }: { backupId: string }) {
         <Searchbar placeholder={dictionary.dbackup.searchName} value={search} setValue={setSearch} />
       </div>
       <div className="flex flex-col gap-2">
-        {(logs.isLoading ? skeletonRows : logs.data?.logs ?? []).map((backup) => (
+        {(logs.isLoading ? skeletonRows : (logs.data?.logs ?? [])).map((backup) => (
           <div
             key={backup.id}
             className={cn("rounded-medium bg-content1 group flex flex-row items-center gap-4 p-2", {})}
@@ -262,7 +262,7 @@ export default function DBackupLogs({ backupId }: { backupId: string }) {
                   variant="light"
                   className="ml-auto h-max min-w-0 shrink-0 p-3"
                   isDisabled={logs.isLoading}
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.preventDefault()
                     e.stopPropagation()
                   }}

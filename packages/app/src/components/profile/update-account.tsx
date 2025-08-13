@@ -85,13 +85,13 @@ export default function UpdateAccount({ sessionHasVerifiedEmail }: { sessionHasV
               name="username"
               label={dictionary.profilePage.profileDetails.username.label}
               type="text"
-              isDisabled={updateUserMutation.isLoading || account.isInitialLoading || !hasVerifiedEmail}
+              isDisabled={updateUserMutation.isPending || account.isInitialLoading || !hasVerifiedEmail}
               skeleton={account.isInitialLoading}
             />
             <NeedSavePopup
               show={isNotSensibleInformationsUpdated}
               onReset={resetForm}
-              isSubmitting={updateUserMutation.isLoading}
+              isSubmitting={updateUserMutation.isPending}
               text={dictionary.needSavePopup}
               dictionary={dictionary}
             />

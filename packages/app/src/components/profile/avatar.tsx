@@ -138,7 +138,7 @@ export default function UpdateAvatar({ account }: { account: ReturnType<typeof u
           )}
           onPress={() => handleDelete()}
         >
-          {updateUserMutation.isLoading ? (
+          {updateUserMutation.isPending ? (
             <Spinner
               classNames={{
                 wrapper: "h-4 w-4",

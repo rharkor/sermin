@@ -14,6 +14,9 @@ services:
         max-size: 50m
     ports:
       - 3000:3000
+    depends_on:
+      - redis
+      - db
     networks:
       - default
   wss:
@@ -28,6 +31,10 @@ services:
       driver: json-file
       options:
         max-size: 50m
+    depends_on:
+      - app
+      - redis
+      - db
     ports:
       - 3001:3001
     networks:
@@ -44,6 +51,11 @@ services:
       driver: json-file
       options:
         max-size: 50m
+    depends_on:
+      - app
+      - wss
+      - redis
+      - db
     networks:
       - default
   db:

@@ -10,7 +10,7 @@ export const resendEmailVerificationExpiration = 1000 * 60 * 2 // 5 minutes
 export const defaultMaxPerPage = 100
 export const maxUploadSize = 1024 * 1024 * 10 // 10 MB
 
-export const postgresVersion = ["13", "14", "15", "16"] as const
+export const postgresVersion = ["13", "14", "15", "16", "17"] as const
 export const postgresFormat = ["custom", "directory", "tar", "plain"] as const
 
 export const sectionClassName = "container m-auto flex flex-1 flex-col gap-4 p-2 py-4"

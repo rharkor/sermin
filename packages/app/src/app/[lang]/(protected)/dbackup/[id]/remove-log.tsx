@@ -29,7 +29,7 @@ export default function RemoveLog({
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent className="scrollbar-thin max-h-[80vh] overflow-auto">
-        {(onClose) => (
+        {(onClose: () => void) => (
           <>
             <ModalHeader>{dictionary.dbackup.removeLog}</ModalHeader>
             <ModalBody className="flex flex-col gap-2">
@@ -39,7 +39,7 @@ export default function RemoveLog({
               <Button variant="flat" onPress={onClose}>
                 {dictionary.cancel}
               </Button>
-              <Button color="danger" type="submit" isLoading={removeLogMutation.isLoading} onPress={handleRemoveLog}>
+              <Button color="danger" type="submit" isLoading={removeLogMutation.isPending} onPress={handleRemoveLog}>
                 {dictionary.delete}
               </Button>
             </ModalFooter>
