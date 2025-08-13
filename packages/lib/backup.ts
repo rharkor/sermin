@@ -241,7 +241,6 @@ export const dbackupCron = async (
           endpoint: options.S3_ENDPOINT,
         })
         const bucketName = options.S3_BUCKET
-        const tenMB = 10 * 1024 * 1024
 
         // Get file size without loading entire file into memory
         const fileStats = await fs.stat(finalPath)
