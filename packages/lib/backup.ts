@@ -1,19 +1,12 @@
 import { exec } from "child_process"
+import { createReadStream } from "fs"
 import * as fs from "fs/promises"
 import path from "path"
 import { promisify } from "util"
 import { z } from "zod"
 
 import { backupDetailledStatusSchema } from "@app/src/lib/schemas/backups"
-import {
-  AbortMultipartUploadCommand,
-  CompleteMultipartUploadCommand,
-  CreateMultipartUploadCommand,
-  DeleteObjectCommand,
-  PutObjectCommand,
-  S3Client,
-  UploadPartCommand,
-} from "@aws-sdk/client-s3"
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { prisma } from "@cron/src/lib/prisma"
 import { redis } from "@cron/src/lib/redis"
 
@@ -248,103 +241,42 @@ export const dbackupCron = async (
           endpoint: options.S3_ENDPOINT,
         })
         const bucketName = options.S3_BUCKET
-        const tenMB = 10 * 1024 * 1024
 
-        // const twentyFiveMB = 25 * 1024 * 1024
-        // const createString = (size = twentyFiveMB) => {
-        //   return "x".repeat(size)
-        // }
-        // const str = createString()
-        // const buffer = Buffer.from(str, "utf8")
-        const buffer = await fs.readFile(finalPath)
-        size = buffer.length
+        // Get file size without loading entire file into memory
+        const fileStats = await fs.stat(finalPath)
+        size = fileStats.size
 
-        const multipartUpload = async () => {
-          let uploadId: string | undefined = ""
-          try {
-            const multipartUpload = await s3Client.send(
-              new CreateMultipartUploadCommand({
-                Bucket: bucketName,
-                Key: key,
-              })
-            )
+        const streamUpload = async () => {
+          return new Promise((resolve, reject) => {
+            const stream = createReadStream(finalPath)
 
-            uploadId = multipartUpload.UploadId
+            stream.on("error", (err) => {
+              logger.error(`[${now.toLocaleString()}] ${name} failed reading file stream`)
+              reject(err)
+            })
 
-            const uploadPromises = []
-            // Multipart uploads require a minimum size of 5 MB per part.
-            const numberOfParts = Math.ceil(buffer.length / tenMB)
-            const partSize = Math.ceil(buffer.length / numberOfParts)
-
-            // Upload each part.
-            for (let i = 0; i < numberOfParts; i++) {
-              const start = i * partSize
-              const end = start + partSize
-              uploadPromises.push(
-                s3Client
-                  .send(
-                    new UploadPartCommand({
-                      Bucket: bucketName,
-                      Key: key,
-                      UploadId: uploadId,
-                      Body: buffer.subarray(start, end),
-                      PartNumber: i + 1,
-                    })
-                  )
-                  .then((d) => {
-                    console.log("Part", i + 1, "uploaded")
-                    return d
-                  })
-              )
-            }
-
-            const uploadResults = await Promise.all(uploadPromises)
-
-            return await s3Client.send(
-              new CompleteMultipartUploadCommand({
-                Bucket: bucketName,
-                Key: key,
-                UploadId: uploadId,
-                MultipartUpload: {
-                  Parts: uploadResults.map(({ ETag }, i) => ({
-                    ETag,
-                    PartNumber: i + 1,
-                  })),
-                },
-              })
-            )
-          } catch (err) {
-            logger.error(`[${now.toLocaleString()}] ${name} failed uploading dump`)
-
-            if (uploadId) {
-              const abortCommand = new AbortMultipartUploadCommand({
-                Bucket: bucketName,
-                Key: key,
-                UploadId: uploadId,
-              })
-
-              await s3Client.send(abortCommand)
-            }
-          }
-        }
-        const singlePartUpload = async () => {
-          return await s3Client.send(
-            new PutObjectCommand({
+            // Use S3 putObject with stream directly
+            const uploadCommand = new PutObjectCommand({
               Bucket: bucketName,
               Key: key,
-              Body: buffer,
+              Body: stream,
             })
-          )
+
+            s3Client
+              .send(uploadCommand)
+              .then(resolve)
+              .catch((err) => {
+                logger.error(`[${now.toLocaleString()}] ${name} failed uploading stream to S3`)
+                reject(err)
+              })
+          })
         }
 
         logger.debug(
-          `[${now.toLocaleString()}] ${name} uploading dump (${Math.round((buffer.length / 1024 / 1024) * 100) / 100} MB) file to S3`
+          `[${now.toLocaleString()}] ${name} uploading dump (${Math.round((size / 1024 / 1024) * 100) / 100} MB) file to S3 using stream`
         )
-        if (buffer.length > tenMB) {
-          await multipartUpload()
-        } else {
-          await singlePartUpload()
-        }
+        // Use streaming for all file sizes - it's more efficient and handles large files automatically
+        await streamUpload()
       }
       await upload()
       if (!isTesting) await fs.rm(finalPath)
