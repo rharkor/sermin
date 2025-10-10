@@ -1,8 +1,7 @@
+import { logger } from "@lib/logger";
 import { CronJob } from "cron";
 import * as fs from "fs/promises";
-
 import { prisma } from "@/lib/prisma";
-import { logger } from "@lib/logger";
 
 const currentPath = process.cwd();
 
@@ -57,7 +56,7 @@ export const autoRemoveJob = async () => {
 };
 
 export const autoRemove = async () => {
-  // Every hour
-	new CronJob("0 0 * * *", autoRemoveJob, null, true, "UTC");
+	// Every 10 minutes
+	new CronJob("*/10 * * * *", autoRemoveJob, null, true, "UTC");
 	logger.debug(`CronJob autoRemove started`);
 };

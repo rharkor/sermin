@@ -1,5 +1,13 @@
 # Sermin
 
+## Deploy
+```bash
+aws ecr get-login-password --region us-east-2 --profile dimension-gha | docker login --username AWS --password-stdin 539247446631.dkr.ecr.us-east-2.amazonaws.com       
+docker build -t sermin-cron -f ./packages/cron/Dockerfile .
+docker tag sermin-cron 539247446631.dkr.ecr.us-east-2.amazonaws.com/sermin-cron:latest
+docker push 539247446631.dkr.ecr.us-east-2.amazonaws.com/sermin-cron:latest
+```
+
 Sermin is a modern, open-source, and high-performance application for managing your server databases. You can setup your cronjobs, databases and s3 buckets in a few clicks
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rharkor/sermine/blob/main/LICENSE)
